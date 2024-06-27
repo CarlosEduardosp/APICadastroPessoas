@@ -1,0 +1,5 @@
+imagem = response.body[0]['imagem']
+
+    # Verifique se a resposta contém dados binários (por exemplo, uma imagem)
+    if isinstance(imagem, bytes):
+        imagem = StreamingResponse(io.BytesIO(imagem), media_type="image/jpeg")
