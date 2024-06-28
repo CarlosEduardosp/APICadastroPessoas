@@ -1,5 +1,7 @@
-name: Build and Push Docker Image
+# Nome do workflow
+name: Build, Push Docker Image and Deploy to Render
 
+# Evento que dispara o workflow: push na branch 'master'
 on:
   push:
     branches:
@@ -7,30 +9,41 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # O job será executado em um contêiner Ubuntu
 
     steps:
+    # Passo 1: Fazer checkout do código do repositório
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Passo 2: Configurar o Docker Buildx para build multi-plataforma
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
+    # Passo 3: Fazer login no Docker Hub usando segredos armazenados no GitHub
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }} # Nome de usuário do Docker Hub
+        password: ${{ secrets.DOCKER_PASSWORD }} # Senha do Docker Hub
 
+    # Passo 4: Configurar QEMU para suportar builds multi-plataforma
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
 
+    # Passo 5: Construir e enviar a imagem Docker para o Docker Hub
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:latest
+        context: . # O contexto de build é o diretório atual
+        push: true # Enviar a imagem após o build
+        tags: ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:latest # Tag da imagem no Docker Hub
 
+    # Passo 6: Exibir o digest da imagem construída
     - name: Image digest
       run: echo ${{ steps.build.outputs.digest }}
+
+    # Passo 7: Fazer deploy da imagem no Render usando a URL de implantação
+    - name: Deploy to Render
+      run: |
+        curl -X POST https://api.render.com/deploy/srv-cpv365tumphs73c4qs90?key=vLbD-ezuTqM
