@@ -12,9 +12,9 @@ def inicio():
 
     response = {
         "Success": 200,
-        "Message": "Api backend Icnv-Araruama, Banco Postgre, rodando perfeitamente.",
-        "Versão": 2.0,
-        "Info": "Use https://icnvback.onrender.com/docs para acessar a documentação no Swagger ",
+        "Message": "Api backend Cadastro de Pessoas, Banco PostgreSQL, rodando perfeitamente.",
+        "Versão": 1.0,
+        "Info": "Use '(link)/docs' para acessar a documentação no Swagger ",
         "Dev": "Carlos Eduardo dos S. Padilha"
     }
 

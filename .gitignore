@@ -1,3 +1,4 @@
 transportar_dados.py
 .venv
 .idea
+__pycache__

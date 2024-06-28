@@ -8,7 +8,6 @@ import io
 
 router = APIRouter()
 
-
 @router.post('/inserir')
 def inserir(item: Item):
 
@@ -28,6 +27,7 @@ def inserir(item: Item):
         status=item.status,
         complemento=item.complemento
     )
+
 
     # se resposta igual a true, segue para inserção dos dados no banco.
     if resposta2['success']:
@@ -58,4 +58,5 @@ def inserir(item: Item):
         except:
             return response
 
-
+    else:
+        return resposta2['data']
