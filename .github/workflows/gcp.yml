@@ -36,10 +36,11 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: . # O contexto de build é o diretório atual
-        push: true # Enviar a imagem após o build
+        push: true # Enviar a imagem após o build, ${{ github.sha }} Adiciona o SHA do commit na tag
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:latest
-          ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:${{ github.sha }} # Adiciona o SHA do commit na tag
+          ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:${{ github.sha }} 
+          
 
     # Passo 6: Exibir o digest da imagem construída
     - name: Image digest
