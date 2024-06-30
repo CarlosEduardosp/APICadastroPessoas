@@ -19,16 +19,6 @@ def conectar_db():
 
         connection = connection_pool.getconn()
 
-        """
-        # Conecta ao banco de dados recém-criado
-        connection = psycopg2.connect(
-            user="postgres",
-            password="071419",
-            host="localhost",
-            port="5432",
-            database="testando_db"
-        )"""
-
         # retorna uma variável com a conexão
         return {"connection": connection, "connection_pool": connection_pool}
 

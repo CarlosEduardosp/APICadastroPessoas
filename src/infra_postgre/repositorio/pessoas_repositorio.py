@@ -7,18 +7,25 @@ from typing import Type
 
 class InserirPessoa(InterfacePessoaRepository):
 
+    # método construtor para conexão com banco de dados.
+    def __init__(self, conectar_db: Type[conectar_db()]):
+        self.conectar_db = conectar_db
 
-    def criar_pessoa(self, nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero,
-                     status, complemento):
-        conn = conectar_db()
+    def criar_pessoa(self, nome, data_nascimento, telefone,
+                     email, sexo, estado, cidade, bairro,
+                     logradouro, numero, status, complemento):
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 
         try:
             cursor.execute(
-                "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento) "
+                "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, "
+                "estado, cidade, bairro, logradouro, numero, status, complemento) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento)
+                (nome, data_nascimento, telefone,
+                 email, sexo, estado, cidade, bairro,
+                 logradouro, numero, status, complemento)
             )
             connection.commit()
             id_pessoa = cursor.lastrowid
@@ -49,7 +56,7 @@ class InserirPessoa(InterfacePessoaRepository):
             raise e
 
     def listar_pessoas(self):
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -66,7 +73,7 @@ class InserirPessoa(InterfacePessoaRepository):
             raise e
 
     def encontrar_pessoa_por_id(self, pessoa_id):
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -83,7 +90,7 @@ class InserirPessoa(InterfacePessoaRepository):
             raise e
 
     def encontrar_pessoa_por_nome(self, pessoa_nome):
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -100,7 +107,7 @@ class InserirPessoa(InterfacePessoaRepository):
             raise e
 
     def deletar_pessoa(self, pessoa_id):
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -118,7 +125,7 @@ class InserirPessoa(InterfacePessoaRepository):
             raise e
 
     def atualizar_pessoa(self, pessoa_id, dados_atualizados):
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
 

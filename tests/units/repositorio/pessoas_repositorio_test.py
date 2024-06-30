@@ -1,62 +1,76 @@
+import unittest
 from unittest.mock import patch, MagicMock
-from faker import Faker
 from src.infra_postgre.repositorio.pessoas_repositorio import InserirPessoa
 
-faker = Faker()
+
+class TestInserirPessoa(unittest.TestCase):
+
+    @patch('src.infra_postgre.configs.connection.connection_db')
+    @patch('src.infra_postgre.configs.connection.fechar_conexao')
+    def test_criar_pessoa(self, mock_fechar_conexao, mock_conectar_db):
+        # Mockar a conexão com o banco de dados
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_conectar_db.return_value = {'connection': mock_connection, 'connection_pool': MagicMock()}
+        mock_connection.cursor.return_value = mock_cursor
+        mock_cursor.lastrowid = 1
+
+        # Dados mockados para a criação da pessoa
+        nome = "João Silva"
+        data_nascimento = "14051986"
+        telefone = "22912365478"
+        email = "joao@example.com"
+        sexo = "M"
+        estado = "SP"
+        cidade = "São Paulo"
+        bairro = "Centro"
+        logradouro = "Rua A"
+        numero = "100"
+        status = True
+        complemento = "Apt 101"
+
+        # Criar uma instância da classe InserirPessoa
+        repo = InserirPessoa(mock_conectar_db)
+        response = repo.criar_pessoa(nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento)
 
 
-@patch('src.infra_postgre.configs.connection.connection_db.conectar_db')
-@patch('src.infra_postgre.configs.connection.fechar_conexao_db')
-def test_inserir_pessoa(mock_fechar_conexao_db, mock_conectar_db):
-    # Configuração do mock para conectar_db
-    mock_connection = MagicMock()
-    mock_cursor = MagicMock()
-    mock_connection.cursor.return_value = mock_cursor
-    mock_conectar_db.return_value = {'connection': mock_connection, 'connection_pool': MagicMock()}
+        # Verificações
+        mock_cursor.execute(
+            "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, "
+            "logradouro, numero, status, complemento) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento)
+        )
+        mock_connection.commit()
 
-    # Simulação de comportamento do cursor
-    mock_cursor.fetchone.return_value = {'id': 1}
+        # recupera o ultimo id salvo no banco mockado.
+        id_pessoa = mock_cursor.lastrowid
 
-    pessoa = InserirPessoa()
+        # Acessar os argumentos passados para o execute, insert_query == query executada,
+        # insert_values == valores enviados
+        insert_query, insert_values = mock_cursor.execute.call_args[0]
 
-    nome = 'aluísio'
-    data_nascimento = str(faker.random_number(digits=8))
-    telefone = faker.phone_number()
-    email = faker.email()
-    sexo = 'feminino'
-    estado = faker.state()
-    cidade = faker.city()
-    bairro = faker.street_name()
-    logradouro = faker.street_address()
-    numero = '235'
-    complemento = 'complemento'
-    status = True
+        #print("Query executada:", insert_query)
+        #print("Valores enviados:", insert_values)
 
-    response = pessoa.criar_pessoa(
-        nome, data_nascimento, telefone,
-        email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento
-    )
+        # fechando conexão com banco de dados
+        mock_fechar_conexao(cursor=mock_cursor, connection=mock_connection, connection_pool=mock_conectar_db.return_value['connection_pool'])
 
-    # Verificações usando mocks
-    #mock_conectar_db.assert_called_once()
-    #mock_cursor.execute.assert_called_once()
-    #mock_cursor.fetchone.assert_called_once()
-    #mock_connection.commit.assert_called_once()
-    #mock_fechar_conexao_db.assert_called_once_with(cursor=mock_cursor, connection=mock_connection, connection_pool=mock_conectar_db.return_value['connection_pool'])
+        # validações com assertEqual, realizando comparações entre os dados da função testada, com dados do mock.
+        self.assertEqual(response['id'], id_pessoa)
+        self.assertEqual(response['nome'], insert_values[0])
+        self.assertEqual(response['data_nascimento'], insert_values[1])
+        self.assertEqual(response['telefone'], insert_values[2])
+        self.assertEqual(response['email'], insert_values[3])
+        self.assertEqual(response['sexo'], insert_values[4])
+        self.assertEqual(response['estado'], insert_values[5])
+        self.assertEqual(response['cidade'], insert_values[6])
+        self.assertEqual(response['bairro'], insert_values[7])
+        self.assertEqual(response['logradouro'], insert_values[8])
+        self.assertEqual(response['numero'], insert_values[9])
+        self.assertEqual(response['status'], insert_values[10])
+        self.assertEqual(response['complemento'], insert_values[11])
 
-    # Verificações de resultado
-    assert response['nome'] == nome
-    assert response['data_nascimento'] == data_nascimento
-    assert response['telefone'] == telefone
-    assert response['email'] == email
-    assert response['sexo'] == sexo
-    assert response['estado'] == estado
-    assert response['cidade'] == cidade
-    assert response['bairro'] == bairro
-    assert response['logradouro'] == logradouro
-    assert response['numero'] == numero
-    assert response['complemento'] == complemento
-    assert response['status'] == status
-
-    print('Teste unitário de inserção de pessoa OK')
+        # resultado dos testes
+        print('Resultado teste repositorio', response)
 
