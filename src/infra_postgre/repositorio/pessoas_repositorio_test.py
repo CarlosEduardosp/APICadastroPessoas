@@ -7,20 +7,7 @@ faker = Faker()
 def test_inserir_pessoa():
     pessoa = InserirPessoa()
 
-    response = pessoa.criar_pessoa(
-        nome=faker.name(),
-        data_nascimento=str(faker.random_number(digits=8)),
-        telefone=faker.name(),
-        email=faker.email(),
-        sexo=f'feminino',
-        estado=faker.name(),
-        cidade=faker.name(),
-        bairro=faker.name(),
-        logradouro=faker.name(),
-        numero='235',
-        complemento=faker.name(),
-        status=True
-    )
+    response = pessoa.criar_pessoa(pessoa=faker.name())
 
     print(response)
 

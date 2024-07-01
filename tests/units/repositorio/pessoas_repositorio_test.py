@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from src.infra_postgre.repositorio.pessoas_repositorio import InserirPessoa
+from src.models.pessoa_models import Pessoa
 
 
 class TestInserirPessoa(unittest.TestCase):
@@ -8,6 +9,7 @@ class TestInserirPessoa(unittest.TestCase):
     @patch('src.infra_postgre.configs.connection.connection_db')
     @patch('src.infra_postgre.configs.connection.fechar_conexao')
     def test_criar_pessoa(self, mock_fechar_conexao, mock_conectar_db):
+
         # Mockar a conexão com o banco de dados
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
@@ -16,30 +18,32 @@ class TestInserirPessoa(unittest.TestCase):
         mock_cursor.lastrowid = 1
 
         # Dados mockados para a criação da pessoa
-        nome = "João Silva"
-        data_nascimento = "14051986"
-        telefone = "22912365478"
-        email = "joao@example.com"
-        sexo = "M"
-        estado = "SP"
-        cidade = "São Paulo"
-        bairro = "Centro"
-        logradouro = "Rua A"
-        numero = "100"
-        status = True
-        complemento = "Apt 101"
+        pessoa = Pessoa(
+            id=1,
+            nome="Kadu Silva",
+            data_nascimento="14051986",
+            telefone="22912365478",
+            email="joao@example.com",
+            sexo="M",
+            estado="SP",
+            cidade="São Paulo",
+            bairro="Centro",
+            logradouro="Rua A",
+            numero="100",
+            status=True,
+            complemento="Apt 101"
+        )
 
         # Criar uma instância da classe InserirPessoa
         repo = InserirPessoa(mock_conectar_db)
-        response = repo.criar_pessoa(nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento)
-
+        response = repo.criar_pessoa(pessoa=pessoa)
 
         # Verificações
         mock_cursor.execute(
             "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, "
             "logradouro, numero, status, complemento) "
             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (nome, data_nascimento, telefone, email, sexo, estado, cidade, bairro, logradouro, numero, status, complemento)
+            (pessoa)
         )
         mock_connection.commit()
 
@@ -58,18 +62,18 @@ class TestInserirPessoa(unittest.TestCase):
 
         # validações com assertEqual, realizando comparações entre os dados da função testada, com dados do mock.
         self.assertEqual(response['id'], id_pessoa)
-        self.assertEqual(response['nome'], insert_values[0])
-        self.assertEqual(response['data_nascimento'], insert_values[1])
-        self.assertEqual(response['telefone'], insert_values[2])
-        self.assertEqual(response['email'], insert_values[3])
-        self.assertEqual(response['sexo'], insert_values[4])
-        self.assertEqual(response['estado'], insert_values[5])
-        self.assertEqual(response['cidade'], insert_values[6])
-        self.assertEqual(response['bairro'], insert_values[7])
-        self.assertEqual(response['logradouro'], insert_values[8])
-        self.assertEqual(response['numero'], insert_values[9])
-        self.assertEqual(response['status'], insert_values[10])
-        self.assertEqual(response['complemento'], insert_values[11])
+        self.assertEqual(response['nome'], insert_values[1])
+        self.assertEqual(response['data_nascimento'], insert_values[2])
+        self.assertEqual(response['telefone'], insert_values[3])
+        self.assertEqual(response['email'], insert_values[4])
+        self.assertEqual(response['sexo'], insert_values[5])
+        self.assertEqual(response['estado'], insert_values[6])
+        self.assertEqual(response['cidade'], insert_values[7])
+        self.assertEqual(response['bairro'], insert_values[8])
+        self.assertEqual(response['logradouro'], insert_values[9])
+        self.assertEqual(response['numero'], insert_values[10])
+        self.assertEqual(response['status'], insert_values[11])
+        self.assertEqual(response['complemento'], insert_values[12])
 
         # resultado dos testes
         print('Resultado teste repositorio', response)

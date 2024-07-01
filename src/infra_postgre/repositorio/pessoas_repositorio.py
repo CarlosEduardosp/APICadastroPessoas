@@ -1,6 +1,7 @@
 from src.infra_postgre.configs.connection.connection_db import conectar_db
 from src.infra_postgre.configs.connection.fechar_conexao import fechar_conexao_db
 from src.infra_postgre.repositorio.interfaces_repositorio.interface_repositorio import InterfacePessoaRepository
+from src.models.pessoa_models import Pessoa
 from psycopg2.extras import DictCursor
 from typing import Type
 
@@ -8,12 +9,10 @@ from typing import Type
 class InserirPessoa(InterfacePessoaRepository):
 
     # método construtor para conexão com banco de dados.
-    def __init__(self, conectar_db: Type[conectar_db()]):
+    def __init__(self, conectar_db: Type[conectar_db]):
         self.conectar_db = conectar_db
 
-    def criar_pessoa(self, nome, data_nascimento, telefone,
-                     email, sexo, estado, cidade, bairro,
-                     logradouro, numero, status, complemento):
+    def criar_pessoa(self, pessoa: Type[Pessoa]):
         conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
@@ -23,9 +22,7 @@ class InserirPessoa(InterfacePessoaRepository):
                 "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, "
                 "estado, cidade, bairro, logradouro, numero, status, complemento) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nome, data_nascimento, telefone,
-                 email, sexo, estado, cidade, bairro,
-                 logradouro, numero, status, complemento)
+                (pessoa)
             )
             connection.commit()
             id_pessoa = cursor.lastrowid
@@ -34,18 +31,18 @@ class InserirPessoa(InterfacePessoaRepository):
 
             response = {
                 'id': id_pessoa,
-                'nome': nome,
-                'data_nascimento': data_nascimento,
-                'telefone': telefone,
-                'email': email,
-                'sexo': sexo,
-                'estado': estado,
-                'cidade': cidade,
-                'bairro': bairro,
-                'logradouro': logradouro,
-                'numero': numero,
-                'status': status,
-                'complemento': complemento
+                'nome': pessoa.nome,
+                'data_nascimento': pessoa.data_nascimento,
+                'telefone': pessoa.telefone,
+                'email': pessoa.email,
+                'sexo': pessoa.sexo,
+                'estado': pessoa.estado,
+                'cidade': pessoa.cidade,
+                'bairro': pessoa.bairro,
+                'logradouro': pessoa.logradouro,
+                'numero': pessoa.numero,
+                'status': pessoa.status,
+                'complemento': pessoa.complemento
             }
 
             return response
