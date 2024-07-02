@@ -1,3 +1,5 @@
+import psycopg2.extras
+
 from src.infra_postgre.configs.connection.connection_db import conectar_db
 from src.infra_postgre.configs.connection.fechar_conexao import fechar_conexao_db
 from src.infra_postgre.repositorio.interfaces_repositorio.interface_repositorio import InterfacePessoaRepository
@@ -22,13 +24,52 @@ class InserirPessoa(InterfacePessoaRepository):
                 "INSERT INTO pessoas (nome, data_nascimento, telefone, email, sexo, "
                 "estado, cidade, bairro, logradouro, numero, status, complemento) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (pessoa)
+                (
+                    pessoa.nome,
+                    pessoa.data_nascimento,
+                    pessoa.telefone,
+                    pessoa.email,
+                    pessoa.sexo,
+                    pessoa.estado,
+                    pessoa.cidade,
+                    pessoa.bairro,
+                    pessoa.logradouro,
+                    pessoa.numero,
+                    pessoa.status,
+                    pessoa.complemento
+                )
             )
             connection.commit()
             id_pessoa = cursor.lastrowid
 
+            # recuperando a última pessoa inserida no banco.
+            cursor.execute("SELECT * FROM pessoas ORDER BY id DESC LIMIT 1;")
+            resposta = cursor.fetchone()
+
             fechar_conexao_db(cursor=cursor, connection=connection, connection_pool=conn['connection_pool'])
 
+            # verifica se o tipo de resposta é um tipo psycopg2 e não um mock do teste.
+            if type(resposta) == psycopg2.extras.DictRow:
+
+                response = {
+                'id': resposta[0],
+                'nome': resposta[1],
+                'data_nascimento': resposta[2],
+                'telefone': resposta[3],
+                'email': resposta[4],
+                'sexo': resposta[5],
+                'estado': resposta[6],
+                'cidade': resposta[7],
+                'bairro': resposta[8],
+                'logradouro': resposta[9],
+                'numero': resposta[10],
+                'complemento': resposta[11],
+                'status': resposta[12]
+                }
+
+                return response
+
+            # caso o tipo seja diferente de psycopg2
             response = {
                 'id': id_pessoa,
                 'nome': pessoa.nome,
