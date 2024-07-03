@@ -162,7 +162,7 @@ class InserirPessoa(InterfacePessoaRepository):
             fechar_conexao_db(cursor=cursor, connection=connection, connection_pool=conn['connection_pool'])
             raise e
 
-    def atualizar_pessoa(self, pessoa_id, dados_atualizados):
+    def atualizar_pessoa(self, pessoa_id, pessoa: Type[Pessoa]):
         conn = self.conectar_db()
         connection = conn['connection']
         cursor = connection.cursor(cursor_factory=DictCursor)
@@ -184,19 +184,19 @@ class InserirPessoa(InterfacePessoaRepository):
                 "complemento = %s "
                 "WHERE id = %s",
                 (
-                    dados_atualizados['nome'],
-                    dados_atualizados['data_nascimento'],
-                    dados_atualizados['telefone'],
-                    dados_atualizados['email'],
-                    dados_atualizados['sexo'],
-                    dados_atualizados['estado'],
-                    dados_atualizados['cidade'],
-                    dados_atualizados['bairro'],
-                    dados_atualizados['logradouro'],
-                    dados_atualizados['numero'],
-                    dados_atualizados['status'],
-                    dados_atualizados['complemento'],
-                    pessoa_id
+                    pessoa.nome,
+                    pessoa.data_nascimento,
+                    pessoa.telefone,
+                    pessoa.email,
+                    pessoa.sexo,
+                    pessoa.estado,
+                    pessoa.cidade,
+                    pessoa.bairro,
+                    pessoa.logradouro,
+                    pessoa.numero,
+                    pessoa.status,
+                    pessoa.complemento,
+                    pessoa.id
                 )
             )
             connection.commit()
