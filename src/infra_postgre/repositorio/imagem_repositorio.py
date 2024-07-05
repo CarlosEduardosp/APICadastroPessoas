@@ -2,13 +2,20 @@ from src.infra_postgre.configs.connection.connection_db import conectar_db
 from src.infra_postgre.configs.connection.fechar_conexao import fechar_conexao_db
 from src.infra_postgre.repositorio.interfaces_repositorio.interface_imagem_repositorio import InterfaceImagemRepository
 from psycopg2.extras import DictCursor
+from typing import Type
+from src.models.imagem_models import Imagem
+
 
 class InserirImagem(InterfaceImagemRepository):
 
-    def criar_imagem(self, id_pessoa, nome, imagem):
+    # método construtor para conexão com banco de dados.
+    def __init__(self, conectar_db: Type[conectar_db]):
+        self.conectar_db = conectar_db
+
+    def criar_imagem(self, imagem: Type[Imagem]):
 
         # conectando ao banco
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
 
         # criando um cursor
@@ -17,9 +24,8 @@ class InserirImagem(InterfaceImagemRepository):
         #Executar a inserção na tabela do PostgreSQL
         cursor.execute(
             "INSERT INTO imagem (id_pessoa, nome, imagem) VALUES (%s, %s, %s)",
-        (id_pessoa, nome, imagem)
+        (imagem.id_pessoa, imagem.nome, imagem.imagem)
         )
-
 
         connection.commit()
 
@@ -32,7 +38,7 @@ class InserirImagem(InterfaceImagemRepository):
     def listar_imagens(self):
 
         # conectando ao banco
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
 
         # criando um cursor
@@ -52,7 +58,7 @@ class InserirImagem(InterfaceImagemRepository):
     def encontrar_imagem_por_id(self, id_pessoa):
 
         # conectando ao banco
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
 
         # criando um cursor
@@ -77,7 +83,7 @@ class InserirImagem(InterfaceImagemRepository):
     def deletar_imagem(self, id_pessoa):
 
         # conectando ao banco
-        conn = conectar_db()
+        conn = self.conectar_db()
         connection = conn['connection']
 
         # criando um cursor

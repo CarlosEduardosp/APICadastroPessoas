@@ -16,10 +16,6 @@ class InterfacePessoaRepository(ABC):
         pass
 
     @abstractmethod
-    def encontrar_pessoa_por_nome(self, pessoa_nome):
-        pass
-
-    @abstractmethod
     def atualizar_pessoa(self, pessoa_id, dados_atualizados):
         pass
 

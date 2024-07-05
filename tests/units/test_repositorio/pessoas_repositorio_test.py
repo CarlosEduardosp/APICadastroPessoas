@@ -93,7 +93,7 @@ class TestInserirPessoa(unittest.TestCase):
         self.assertEqual(response['complemento'], insert_values[11])
 
         # Resultado dos testes
-        print('Resultado teste repositorio', response)
+        print('Resultado teste test_repositorio', response)
 
     def test_select_all(self):
         # Criar uma instância da classe InserirPessoa com o banco mock
@@ -113,7 +113,7 @@ class TestInserirPessoa(unittest.TestCase):
                                  connection_pool=self.mock_conectar_db.return_value['connection_pool'])
 
         # Resultado dos testes
-        print('Resultado teste repositorio', response)
+        print('Resultado teste test_repositorio', response)
 
     def test_select_por_id(self):
         # Criar uma instância da classe InserirPessoa com o banco mock
@@ -136,32 +136,8 @@ class TestInserirPessoa(unittest.TestCase):
 
 
         # Resultado dos testes
-        print('Resultado teste repositorio', response)
+        print('Resultado teste test_repositorio', response)
 
-    def test_select_por_name(self):
-
-        # Criar uma instância da classe InserirPessoa com o banco mock
-        #repo = InserirPessoa(self.mock_conectar_db)
-
-        # criar uma instância da classe com banco real
-        repo = InserirPessoa(conectar_db)
-
-        # parâmetro precisa ser nome completo
-        pessoa_nome = 'Kadu Silva'
-
-        response = repo.encontrar_pessoa_por_nome(pessoa_nome=pessoa_nome)
-
-        # Verificações
-        self.mock_cursor.execute("SELECT * FROM pessoas WHERE nome = %s;", (pessoa_nome,))
-        self.mock_connection.commit()
-
-        # Fechando conexão com banco de dados
-        self.mock_fechar_conexao(cursor=self.mock_cursor, connection=self.mock_connection,
-                                 connection_pool=self.mock_conectar_db.return_value['connection_pool'])
-
-
-        # Resultado dos testes
-        print('Resultado teste repositorio', response)
 
     def test_delete(self):
 
@@ -184,7 +160,7 @@ class TestInserirPessoa(unittest.TestCase):
                                  connection_pool=self.mock_conectar_db.return_value['connection_pool'])
 
         # Resultado dos testes
-        print('Resultado teste repositorio', response)
+        print('Resultado teste test_repositorio', response)
 
     def test_atualizar_pessoa(self):
 
@@ -257,5 +233,5 @@ class TestInserirPessoa(unittest.TestCase):
         self.mock_fechar_conexao(cursor=self.mock_cursor, connection=self.mock_connection, connection_pool=self.mock_conectar_db.return_value['connection_pool'])
 
         # Resultado dos testes
-        print('Resultado teste repositorio', response)
+        print('Resultado teste test_repositorio', response)
 

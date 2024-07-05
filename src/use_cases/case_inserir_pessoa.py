@@ -1,7 +1,7 @@
 from src.infra_postgre.repositorio.pessoas_repositorio import InserirPessoa
 from src.use_cases.interface_use_case.interface_use_case import InterfacePessoaUsecse
 from typing import Type
-
+from src.models.pessoa_models import Pessoa
 
 class Registrarpessoa(InterfacePessoaUsecse):
     """ Caso de uso para registrar uma pessoa """
@@ -9,52 +9,43 @@ class Registrarpessoa(InterfacePessoaUsecse):
     def __init__(self, pessoa_repository: Type[InserirPessoa]):
         self.pessoa_repository = pessoa_repository
 
-    def inserirpessoa(
-        self,
-        nome: str,
-        data_nascimento: str,
-        telefone: str,
-        email: str,
-        sexo: str,
-        estado: str,
-        cidade: str,
-        bairro: str,
-        logradouro: str,
-        numero: str,
-        status: bool,
-        complemento: str
-    ):
+    def inserirpessoa(self,pessoa: Type[Pessoa]):
         """ Inserir pessoa """
 
         validade_entry = self.__validar_dados(
-            nome,
-            data_nascimento,
-            telefone,
-            email,
-            sexo,
-            estado,
-            cidade,
-            bairro,
-            logradouro,
-            numero,
-            status,
-            complemento
+            pessoa.nome,
+            pessoa.data_nascimento,
+            pessoa.telefone,
+            pessoa.email,
+            pessoa.sexo,
+            pessoa.estado,
+            pessoa.cidade,
+            pessoa.bairro,
+            pessoa.logradouro,
+            pessoa.numero,
+            pessoa.status,
+            pessoa.complemento
+        )
+
+        dados = Pessoa(
+            id=int,
+            nome=pessoa.nome,
+            data_nascimento=pessoa.data_nascimento,
+            telefone=pessoa.telefone,
+            email=pessoa.email,
+            sexo=pessoa.sexo,
+            estado=pessoa.estado,
+            cidade=pessoa.cidade,
+            bairro=pessoa.bairro,
+            logradouro=pessoa.logradouro,
+            numero=pessoa.numero,
+            status=pessoa.status,
+            complemento=pessoa.complemento
         )
 
         if validade_entry:
             response = self.pessoa_repository.criar_pessoa(
-                nome=nome,
-                data_nascimento=data_nascimento,
-                telefone=telefone,
-                email=email,
-                sexo=sexo,
-                estado=estado,
-                cidade=cidade,
-                bairro=bairro,
-                logradouro=logradouro,
-                numero=numero,
-                status=status,
-                complemento=complemento
+                dados
             )
             return {'success': True, 'data': response}
         else:
@@ -96,25 +87,25 @@ class Registrarpessoa(InterfacePessoaUsecse):
         else:
             raise ValueError('nome deve ser uma string.')
 
-    def atualizar_dados(self,pessoa_id: int, dados_atualizados: dict):
+    def atualizar_dados(self,pessoa_id: int, pessoa: Type[Pessoa]):
         """ Atualizando dados de pessoas """
 
         validade_entry = self.__validar_dados(
-                nome=dados_atualizados['nome'],
-                data_nascimento=dados_atualizados['data_nascimento'],
-                telefone=dados_atualizados['telefone'],
-                email=dados_atualizados['email'],
-                sexo=dados_atualizados['sexo'],
-                estado=dados_atualizados['estado'],
-                cidade=dados_atualizados['cidade'],
-                bairro=dados_atualizados['bairro'],
-                logradouro=dados_atualizados['logradouro'],
-                numero=dados_atualizados['numero'],
-                status=dados_atualizados['status'],
-                complemento=dados_atualizados['complemento'])
+                nome=pessoa.nome,
+                data_nascimento=pessoa.data_nascimento,
+                telefone=pessoa.telefone,
+                email=pessoa.email,
+                sexo=pessoa.sexo,
+                estado=pessoa.estado,
+                cidade=pessoa.cidade,
+                bairro=pessoa.bairro,
+                logradouro=pessoa.logradouro,
+                numero=pessoa.numero,
+                status=pessoa.status,
+                complemento=pessoa.complemento)
 
         if validade_entry:
-            response = self.pessoa_repository.atualizar_pessoa(pessoa_id=pessoa_id, dados_atualizados=dados_atualizados)
+            response = self.pessoa_repository.atualizar_pessoa(pessoa_id=pessoa_id, pessoa=pessoa)
             return {'success': True, 'data': response}
 
         return {'success': False, 'data': self.__error()}

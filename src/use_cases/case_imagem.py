@@ -1,5 +1,6 @@
 from src.infra_postgre.repositorio.imagem_repositorio import InserirImagem
 from src.use_cases.interface_use_case.interface_use_case_imagem import InterfaceImagemUsecase
+from src.models.imagem_models import Imagem
 from typing import Type
 
 
@@ -9,21 +10,19 @@ class Registrarimagem(InterfaceImagemUsecase):
     def __init__(self, imagem_repository: Type[InserirImagem]):
         self.imagem_repository = imagem_repository
 
-    def inseririmagem(
-            self,
-            id_pessoa: int,
-            nome: str,
-            imagem: bytes
-    ):
+    def inseririmagem(self, imagem: Type[Imagem]):
         """ Inserir pessoa """
 
-        validade_entry = isinstance(id_pessoa, int)
+        validade_entry = isinstance(imagem.id_pessoa, int)
+
+        dados = Imagem(id_imagem=imagem.id_imagem,
+                       id_pessoa=imagem.id_pessoa,
+                       nome=imagem.nome,
+                       imagem=imagem.imagem)
 
         if validade_entry:
             response = self.imagem_repository.criar_imagem(
-                id_pessoa=id_pessoa,
-                nome=nome,
-                imagem=imagem
+                dados
             )
 
             return {'success': True, 'data': response}

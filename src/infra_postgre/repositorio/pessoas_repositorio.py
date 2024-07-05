@@ -127,23 +127,6 @@ class InserirPessoa(InterfacePessoaRepository):
             fechar_conexao_db(cursor=cursor, connection=connection, connection_pool=conn['connection_pool'])
             raise e
 
-    def encontrar_pessoa_por_nome(self, pessoa_nome):
-        conn = self.conectar_db()
-        connection = conn['connection']
-        cursor = connection.cursor(cursor_factory=DictCursor)
-
-        try:
-            cursor.execute("SELECT * FROM pessoas WHERE nome = %s;", (pessoa_nome,))
-            response = cursor.fetchall()
-
-            fechar_conexao_db(cursor=cursor, connection=connection, connection_pool=conn['connection_pool'])
-
-            return response
-
-        except Exception as e:
-            fechar_conexao_db(cursor=cursor, connection=connection, connection_pool=conn['connection_pool'])
-            raise e
-
     def deletar_pessoa(self, pessoa_id):
         conn = self.conectar_db()
         connection = conn['connection']
@@ -196,7 +179,7 @@ class InserirPessoa(InterfacePessoaRepository):
                     pessoa.numero,
                     pessoa.status,
                     pessoa.complemento,
-                    pessoa.id
+                    pessoa_id
                 )
             )
             connection.commit()
