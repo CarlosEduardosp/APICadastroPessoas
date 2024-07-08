@@ -3,7 +3,7 @@ from src.use_cases.case_imagem import Registrarimagem
 from src.presenters.errors.http_errors import HttpErrors
 from src.presenters.helpers.http_models import HttpRequest, HttpResponse
 from src.presenters.conrollers.interface_controller.interface_imagem_controller import RouteInterface
-
+from src.models.imagem_models import Imagem
 
 class RegisterImagemController(RouteInterface):
     """ Class controller """
@@ -31,8 +31,15 @@ class RegisterImagemController(RouteInterface):
                 id_pessoa = http_request.query['id_pessoa']
                 imagem = http_request.query['imagem']
 
+                dados_imagem = Imagem(
+                    nome=nome,
+                    id_pessoa=id_pessoa,
+                    imagem=imagem,
+                    id_imagem=0
+                )
+
                 response = self.register_imagem_use_case.inseririmagem(
-                    nome=nome, id_pessoa=id_pessoa, imagem=imagem
+                    dados_imagem
                 )
 
             else:

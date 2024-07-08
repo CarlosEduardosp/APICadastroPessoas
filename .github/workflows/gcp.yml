@@ -20,27 +20,44 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    # Passo 3: Fazer login no Docker Hub usando segredos armazenados no GitHub
+    # Passo 3: Configurar QEMU para builds multi-plataforma
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    # Novo Passo: Configurar Python e instalar dependências
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install -r requirements.txt
+
+    # Novo Passo: Executar testes
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        pytest -v -s
+
+    # Passo 4: Fazer login no Docker Hub usando segredos armazenados no GitHub
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }} # Nome de usuário do Docker Hub
         password: ${{ secrets.DOCKER_PASSWORD }} # Senha do Docker Hub
 
-    # Passo 4: Configurar QEMU para builds multi-plataforma
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-
     # Passo 5: Construir e enviar a imagem Docker para o Docker Hub
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
         context: . # O contexto de build é o diretório atual
-        push: true # Enviar a imagem após o build, ${{ github.sha }} Adiciona o SHA do commit na tag
+        push: true # Enviar a imagem após o build
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:latest
           ${{ secrets.DOCKER_USERNAME }}/apicadastropessoasdockerimage:${{ github.sha }} 
-          
 
     # Passo 6: Exibir o digest da imagem construída
     - name: Image digest

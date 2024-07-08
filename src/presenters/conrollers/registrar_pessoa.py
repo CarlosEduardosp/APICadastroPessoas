@@ -4,6 +4,7 @@ from src.presenters.errors.http_errors import HttpErrors
 from src.presenters.helpers.http_models import HttpRequest, HttpResponse
 from src.presenters.conrollers.interface_controller.interfacepessoascontroller import RouteInterface
 from .function.calculo_idade import calcular_idade
+from src.models.pessoa_models import Pessoa
 
 
 class RegisterPessoaController(RouteInterface):
@@ -37,23 +38,25 @@ class RegisterPessoaController(RouteInterface):
                 "status" in query_string_params and
                 "complemento" in query_string_params
             ):
-                nome = http_request.query['nome']
-                data_nascimento = http_request.query['data_nascimento']
-                telefone = http_request.query['telefone']
-                email = http_request.query['email']
-                sexo = http_request.query['sexo']
-                estado = http_request.query['estado']
-                cidade = http_request.query['cidade']
-                bairro = http_request.query['bairro']
-                logradouro = http_request.query['logradouro']
-                numero = http_request.query['numero']
-                status = http_request.query['status']
-                complemento = http_request.query['complemento']
+                pessoa = Pessoa(
+                    nome=http_request.query['nome'],
+                    data_nascimento=http_request.query['data_nascimento'],
+                    telefone=http_request.query['telefone'],
+                    email=http_request.query['email'],
+                    sexo=http_request.query['sexo'],
+                    estado=http_request.query['estado'],
+                    cidade=http_request.query['cidade'],
+                    bairro=http_request.query['bairro'],
+                    logradouro=http_request.query['logradouro'],
+                    numero=http_request.query['numero'],
+                    status=http_request.query['status'],
+                    complemento=http_request.query['complemento'],
+                    id=0
+                )
+
 
                 response = self.register_pessoa_use_case.inserirpessoa(
-                    nome=nome, data_nascimento=data_nascimento, telefone=telefone,
-                    email=email, sexo=sexo, estado=estado, cidade=cidade, bairro=bairro,
-                    logradouro=logradouro, numero=numero, status=status, complemento=complemento
+                    pessoa
                 )
 
 
@@ -198,7 +201,7 @@ class RegisterPessoaController(RouteInterface):
         """ method to call use case """
 
         response = None
-
+        print('dados do controller:', http_request.query)
         if http_request.query:
 
             query_string_params = (
@@ -220,21 +223,24 @@ class RegisterPessoaController(RouteInterface):
                 "complemento" in query_string_params and
                 "id" in query_string_params
             ):
-                nome = http_request.query['nome']
-                data_nascimento = http_request.query['data_nascimento']
-                telefone = http_request.query['telefone']
-                email = http_request.query['email']
-                sexo = http_request.query['sexo']
-                estado = http_request.query['estado']
-                cidade = http_request.query['cidade']
-                bairro = http_request.query['bairro']
-                logradouro = http_request.query['logradouro']
-                numero = http_request.query['numero']
-                status = http_request.query['status']
-                complemento = http_request.query['complemento']
-                id = http_request.query['id']
+                pessoa = Pessoa(
+                    nome=http_request.query['nome'],
+                    data_nascimento = http_request.query['data_nascimento'],
+                    telefone = http_request.query['telefone'],
+                    email = http_request.query['email'],
+                    sexo = http_request.query['sexo'],
+                    estado = http_request.query['estado'],
+                    cidade = http_request.query['cidade'],
+                    bairro = http_request.query['bairro'],
+                    logradouro = http_request.query['logradouro'],
+                    numero = http_request.query['numero'],
+                    status = http_request.query['status'],
+                    complemento = http_request.query['complemento'],
+                    id = http_request.query['id']
+                )
 
-                response = self.register_pessoa_use_case.atualizar_dados(id, http_request.query)
+
+                response = self.register_pessoa_use_case.atualizar_dados(pessoa.id, pessoa)
 
             else:
                 response = {'success': False, 'data': None}

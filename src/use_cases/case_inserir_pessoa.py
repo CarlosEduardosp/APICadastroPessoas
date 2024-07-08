@@ -87,8 +87,10 @@ class Registrarpessoa(InterfacePessoaUsecse):
         else:
             raise ValueError('nome deve ser uma string.')
 
-    def atualizar_dados(self,pessoa_id: int, pessoa: Type[Pessoa]):
+    def atualizar_dados(self, pessoa_id: int, pessoa: Type[Pessoa]):
         """ Atualizando dados de pessoas """
+
+        print('dados que estão chegando', pessoa_id, pessoa)
 
         validade_entry = self.__validar_dados(
                 nome=pessoa.nome,

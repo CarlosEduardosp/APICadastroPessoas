@@ -18,7 +18,6 @@ def test_validar():
         logradouro=faker.name(),
         numero=faker.name(),
         status=True,
-        imagem=faker.name(),
         id=125
     )
 
