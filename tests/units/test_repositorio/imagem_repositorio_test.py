@@ -27,7 +27,7 @@ class TestInserirImagem(unittest.TestCase):
     def test_inserir_imagem(self):
 
         # salvando o caminho da imagem
-        caminho_da_imagem = 'C:/Users/carol/Downloads/kadu.jpg'
+        caminho_da_imagem = './imagem_para_teste/teste.jpg'
 
         # Abrir a imagem
         imagem = Image.open(caminho_da_imagem)
