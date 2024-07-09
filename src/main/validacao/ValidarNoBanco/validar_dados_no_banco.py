@@ -1,5 +1,6 @@
 from src.main.adapter.adapter_pessoa import AdapterPessoa
-from src.main.composer.pessoa_composer import register_pessoa_composer
+from src.main.composer.pessoa_composer import RegisterPessoaComposer
+from src.infra_postgre.configs.connection.connection_db import conectar_db
 
 
 def conferir_pessoa_no_banco(email: str):
@@ -8,8 +9,10 @@ def conferir_pessoa_no_banco(email: str):
     :return: True se o email já existir no banco, false caso não exista nenhum email igual no banco.
     """
 
+    composer = RegisterPessoaComposer(conectar_db)
+
     buscar = AdapterPessoa(
-        api_route=register_pessoa_composer(),
+        api_route=composer.register_pessoa_composer(),
         data={}
     )
 

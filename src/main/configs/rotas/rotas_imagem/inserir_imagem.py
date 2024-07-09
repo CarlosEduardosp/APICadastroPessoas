@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Form, HTTPException, File, UploadFile
 from src.main.adapter.adapter_imagem import AdapterImagem
-from src.main.composer.imagem_composer import register_imagem_composer
+from src.main.composer.imagem_composer import RegisterImagemComposer
+from src.infra_postgre.configs.connection.connection_db import conectar_db
 from PIL import Image
 import io
 
@@ -18,9 +19,11 @@ async def inserir_imagem(nome: str, id_pessoa: int, imagem: UploadFile = File(..
     contents = await imagem.read()
     img = Image.open(io.BytesIO(contents))
 
+    composer = RegisterImagemComposer(conectar_db)
+
     # Aqui você pode realizar operações adicionais na imagem, se necessário.
     buscar = AdapterImagem(
-        api_route=register_imagem_composer(),
+        api_route=composer.register_imagem_composer(),
         data={
             "nome": nome,
             "id_pessoa": id_pessoa,

@@ -2,7 +2,8 @@ import fastapi
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, HTTPException
 from src.main.adapter.adapter_imagem import AdapterImagem
-from src.main.composer.imagem_composer import register_imagem_composer
+from src.main.composer.imagem_composer import RegisterImagemComposer
+from src.infra_postgre.configs.connection.connection_db import conectar_db
 import io
 
 router = APIRouter()
@@ -11,9 +12,11 @@ router = APIRouter()
 @router.get('/select_imagem_id')
 async def select_imagem_id(id_pessoa: int):
 
+    composer = RegisterImagemComposer(conectar_db)
+
     # Aqui você pode realizar operações adicionais na imagem, se necessário.
     buscar = AdapterImagem(
-        api_route=register_imagem_composer(),
+        api_route=composer.register_imagem_composer(),
         data={"id_pessoa": id_pessoa},
     )
 

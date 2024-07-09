@@ -1,12 +1,14 @@
 from fastapi import APIRouter
 from src.main.adapter.adapter_pessoa import AdapterPessoa
-from src.main.composer.pessoa_composer import register_pessoa_composer
+from src.main.composer.pessoa_composer import RegisterPessoaComposer
+from src.infra_postgre.configs.connection.connection_db import conectar_db
 from src.main.validacao.classModelsvalidar.inserir_validar import Item
 from src.main.validacao.validar_entrada.validar_dados_entrada import Validar_dados_entrada
 from PIL import Image
 import io
 
 router = APIRouter()
+
 
 @router.post('/inserir')
 def inserir(item: Item):
@@ -32,8 +34,10 @@ def inserir(item: Item):
     # se resposta igual a true, segue para inserção dos dados no banco.
     if resposta2['success']:
 
+        composer = RegisterPessoaComposer(conectar_db)
+
         buscar = AdapterPessoa(
-            api_route=register_pessoa_composer(),
+            api_route=composer.register_pessoa_composer(),
             data={
                 "nome": item.nome,
                 "data_nascimento": item.data_nascimento,

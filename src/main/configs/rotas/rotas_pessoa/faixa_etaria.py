@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from src.main.adapter.adapter_pessoa import AdapterPessoa
-from src.main.composer.pessoa_composer import register_pessoa_composer
-
+from src.main.composer.pessoa_composer import RegisterPessoaComposer
+from src.infra_postgre.configs.connection.connection_db import conectar_db
 router = APIRouter()
 
 
@@ -11,8 +11,10 @@ def faixa_etaria(valor1: int, valor2: int):
     :return: Seleciona pessoas entre uma faixa de idade.
     """
 
+    composer = RegisterPessoaComposer(conectar_db)
+
     buscar = AdapterPessoa(
-        api_route=register_pessoa_composer(),
+        api_route=composer.register_pessoa_composer(),
         data={}
     )
 
